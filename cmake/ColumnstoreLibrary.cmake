@@ -139,14 +139,16 @@ function(columnstore_detect_os OUT_ID OUT_VER_MAJOR)
     )
 endfunction()
 
-# Check whether a given lowercase OS ID is RHEL-like (RHEL/Rocky/Alma/CentOS/RedHat)
-function(columnstore_is_rhel_like OS_ID OUT_BOOL)
-    set(_is_rhel_like FALSE)
-    if(${OS_ID} MATCHES "^(rhel|rocky|almalinux|centos|redhatenterpriseserver|redhatenterprise|redhat)$")
-        set(_is_rhel_like TRUE)
+# Check whether a given lowercase OS ID is potentially supporting selinux
+# This is RHEL-like Fedora/RHEL/Rocky/AlmaLinxu/CentOS, but also SLES and OpenSUSE
+# have selinux as an option.
+function(columnstore_selinux_distro OS_ID OUT_BOOL)
+    set(_is_selinux_distro FALSE)
+    if(${OS_ID} MATCHES "^(rhel|rocky|almalinux|centos|fedora|opensuse-leap|sles)$")
+        set(_is_selinux_distro TRUE)
     endif()
     set(${OUT_BOOL}
-        "${_is_rhel_like}"
+        "${_is_selinux_distro}"
         PARENT_SCOPE
     )
 endfunction()

@@ -9,16 +9,13 @@ if(NOT RPM)
 endif()
 
 columnstore_detect_os(_os_id _os_version_major)
-columnstore_is_rhel_like("${_os_id}" _is_rhel_like)
+columnstore_selinux_distro("${_os_id}" _is_selinux_distro)
 
 # We only build on RHEL-like >= 10
-if(NOT _is_rhel_like
-   OR (NOT _os_version_major)
-   OR (_os_version_major LESS 10)
-)
+if(NOT _is_selinux_distro)
     message(
         STATUS
-            "SELinux policy build skipped: OS '${_os_id}' version '${_os_version_major}' not matching RHEL-like >= 10 or undetected."
+            "SELinux policy build skipped: OS '${_os_id}' version '${_os_version_major}' not matching known selinux capable distros."
     )
     return()
 endif()
@@ -39,7 +36,7 @@ file(MAKE_DIRECTORY "${SELINUX_BUILD_DIR}")
 if(NOT EXISTS "/usr/share/selinux/devel/Makefile")
     message(
         FATAL_ERROR
-            "SELinux policy build requires '/usr/share/selinux/devel/Makefile'. Please install 'selinux-policy-devel' (RHEL/Rocky >= 10) and re-run CMake."
+            "SELinux policy build requires '/usr/share/selinux/devel/Makefile'. Please install 'selinux-policy-devel' and re-run CMake."
     )
 endif()
 
