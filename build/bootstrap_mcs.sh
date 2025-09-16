@@ -135,17 +135,13 @@ install_deps() {
 
     elif is_rocky_version_ge $OS 9; then
         command="dnf install -y 'dnf-command(config-manager)' && dnf config-manager --set-enabled crb && \
-      dnf install -y pcre2-devel gcc gcc-c++ curl-minimal ${RPM_BUILD_DEPS}"
+      dnf install -y pcre2-devel gcc gcc-c++ curl-minimal ${RPM_BUILD_DEPS} selinux-policy-devel"
 
     elif [[ "$OS" == "debian:11"* ]] || [[ "$OS" == "debian:12"* ]] || [[ "$OS" == "ubuntu:20.04"* ]] || [[ "$OS" == "ubuntu:22.04"* ]] || [[ "$OS" == "ubuntu:24.04"* ]]; then
         command="apt-get -y update && apt-get -y install ${DEB_BUILD_DEPS}"
     else
         echo "Unsupported OS: $OS"
         exit 17
-    fi
-
-    if is_rocky_version_ge $OS 10; then
-        command="${command} && dnf install -y selinux-policy-devel"
     fi
 
     if [[ $OS == 'ubuntu:22.04' || $OS == 'ubuntu:24.04' ]]; then
